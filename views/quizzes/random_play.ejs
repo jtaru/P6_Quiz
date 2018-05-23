@@ -2,9 +2,15 @@
     Random Play:
 </h1>
 
-<div>
-    Successful answers = <span id="score"><%= score %></span>
-</div>
+<% if(score){ %>
+	<div>
+    	Successful answers = <span id="score"><%= score %></span>
+	</div>
+<% }else{ %>
+	<div>
+    	Successful answers = <span id="score">0</span>
+	</div>
+<% }%>
 
 <% if(quiz){ %>
 	
