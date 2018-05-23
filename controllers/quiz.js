@@ -161,34 +161,36 @@ exports.randomplay = (req, res, next) => {
     //notEmptyQuizzes()
     models.quiz.findAll()
     .then(quizzes =>{
-        //Si es la primera vez que se juega
-        if (indicesArray.length === 0) {
-            for (var i = 0; i < quizzes.length; i++) {
-                indicesArray.push(quizzes[i]);
+        if (quizzes){
+            //Si es la primera vez que se juega
+            if (indicesArray.length === 0) {
+                for (var i = 0; i < quizzes.length; i++) {
+                    indicesArray.push(quizzes[i]);
+                }
             }
-        }
-        //Busco id aleatorio dentro de los indices de las preguntas no respondidas
-        let id = Math.floor(Math.random()*indicesArray.length);
-        let quiz = quizzes[id];
+            //Busco id aleatorio dentro de los indices de las preguntas no respondidas
+            let id = Math.floor(Math.random()*indicesArray.length);
+            let quiz = quizzes[id];
 
-        //score = quizzes.length - indicesArray.length;
+            //score = quizzes.length - indicesArray.length;
 
-        //Borro la celda del indice a resolver en la siguiente pregunta
-        indicesArray.splice(id, 1);
-        req.session.randomPlay = indicesArray;
+            //Borro la celda del indice a resolver en la siguiente pregunta
+            indicesArray.splice(id, 1);
+            req.session.randomPlay = indicesArray;
 
-        if(req.session.score==quizzes.length){
-            res.render('quizzes/random_nomore', {
-                score: req.session.score
-            });
-            req.session.score = 0;
-            req.session.randomplay = [];
-        }else{
-            res.render('quizzes/random_play',{
-                quiz: quiz,
-                score: req.session.score
-            });
+            if(req.session.score==quizzes.length){
+                res.render('quizzes/random_nomore', {
+                    score: req.session.score
+                });
+                req.session.score = 0;
+                req.session.randomplay = [];
+            }else{
+                res.render('quizzes/random_play',{
+                    quiz: quiz,
+                    score: req.session.score
+                });
 
+            }
         }
     })
     .catch(error => next(error));
