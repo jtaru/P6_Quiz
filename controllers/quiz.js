@@ -158,7 +158,8 @@ exports.randomplay = (req, res, next) => {
     var indicesArray = req.session.randomPlay || [];
     var score = req.session.score || 0;
     const {quiz, query} = req;
-    notEmptyQuizzes()
+    //notEmptyQuizzes()
+    models.quiz.findAll()
     .then(quizzes =>{
         //Si es la primera vez que se juega
         if (indicesArray.length === 0) {
