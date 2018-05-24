@@ -171,8 +171,6 @@ exports.randomplay = (req, res, next) => {
         let id = Math.floor(Math.random()*indicesArray.length);
         let quiz = quizzes[id];
 
-        //score = quizzes.length - indicesArray.length;
-
         //Borro la celda del indice a resolver en la siguiente pregunta
         indicesArray.splice(id, 1);
         req.session.randomPlay = indicesArray;
@@ -222,9 +220,9 @@ exports.randomcheck = function (req, res, next) {
         score=req.session.score;
         req.session.score=0;
     }
-
+    
     res.render('quizzes/random_result', {
-        score:score,
+        score:req.session.score,
         result:result,
         answer:answer
     });
