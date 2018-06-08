@@ -231,3 +231,77 @@ exports.check = (req, res, next) => {
         answer
     });
 };
+
+exports.randomplay = (req, res, next) => {
+    var indicesArray = req.session.randomPlay || [];
+    var score = req.session.score || 0;
+    const {quiz, query} = req;
+    //notEmptyQuizzes()
+    models.quiz.findAll()
+    .then(quizzes =>{
+        //Si es la primera vez que se juega
+        if (indicesArray.length === 0) {
+            for (var i = 0; i < quizzes.length; i++) {
+                indicesArray.push(quizzes[i]);
+            }
+        }
+        //Busco id aleatorio dentro de los indices de las preguntas no respondidas
+        let id = Math.floor(Math.random()*indicesArray.length);
+        let quiz = quizzes[id];
+
+        //Borro la celda del indice a resolver en la siguiente pregunta
+        indicesArray.splice(id, 1);
+        req.session.randomPlay = indicesArray;
+
+        if(req.session.score==quizzes.length){
+            res.render('quizzes/random_nomore', {
+                score: req.session.score
+            });
+            req.session.score = 0;
+            req.session.randomplay = [];
+        }else{
+            res.render('quizzes/random_play',{
+                quiz: quiz,
+                score: req.session.score
+            });
+
+        }
+    })
+    .catch(error => next(error));
+};
+const notEmptyQuizzes = () => {
+    return new Sequelize.Promise((resolve, reject) => {
+        models.quiz.findAll()
+            .then(quizzes => {
+                if (quizzes.length > 0) {
+                    resolve(quizzes);
+                }
+                else {
+                    reject(new Error("No quizzes"));
+                }
+            })
+    });
+};
+
+exports.randomcheck = function (req, res, next) {
+
+    var answer = req.query.answer || "";
+    var result = answer.toLowerCase().trim() === req.quiz.answer.toLowerCase().trim();
+
+    let score;
+
+    if(result){
+        //Jugador acierta
+        req.session.score++;
+        score = req.session.score;
+    }else {
+        score=req.session.score;
+        req.session.score=0;
+    }
+    
+    res.render('quizzes/random_result', {
+        score:req.session.score,
+        result:result,
+        answer:answer
+    });
+};
