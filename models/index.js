@@ -38,4 +38,13 @@ user.hasMany(quiz, {foreignKey: 'authorId'});
 quiz.belongsTo(user, {as: 'author', foreignKey: 'authorId'});
 
 
+//Modifique el fichero models/index.js para definir una relación 1-a-N entre users y tips que refleje
+// usuario es el autor de cada pista. Esta relación es similar a la definida en el tema 17 (Step 17)
+//entre user y quiz.
+
+// Relation 1-to-N between User and Tip:
+user.hasMany(tip, {foreignKey: 'authorId'});
+tip.belongsTo(user, {as: 'author', foreignKey: 'authorId'});
+
+
 module.exports = sequelize;

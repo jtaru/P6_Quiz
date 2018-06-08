@@ -7,10 +7,17 @@
         <% var isAdmin = session.user && session.user.isAdmin; %>
         <% var isQuizAuthor = session.user && quizAuthorId && quizAuthorId === session.user.id; %>
 
-        <% if (accepted || isAdmin || isQuizAuthor) { %>
+
+<%--Adapte la vista views/tips/index.ejs (que se incluye en show y en play) para mostrar quién es el autor de cada una de las pistas listadas. 1. %-->
+        <% var isTipAuthor = session.user && tip.authorId && tip.authorId === session.user.id; %>
+        <% if (accepted || isAdmin || isQuizAuthor || isTipAuthor) { %>
 
             <li>
                 <%= tip.text %>
+
+<%--2. --%>
+                 (by <%= tip.author = tip.author.username ? tip.authorId : "Anónimo" %>)
+
 
                 <% if (!accepted && (isAdmin || isQuizAuthor)) { %>
 

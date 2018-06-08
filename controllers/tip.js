@@ -20,11 +20,19 @@ exports.load = (req, res, next, tipId) => {
 
 // POST /quizzes/:quizId/tips
 exports.create = (req, res, next) => {
+    //El nuevo modelo tip necesita tener la clave externa llamada authorId para implementar la relación
+    //anterior. Cree una migración que añada el campo authorId a la tabla tips. Esta migración es
+    //similar a la creada en el tema 17 para añadir el campo authorId a la tabla quizzes.
+    
+    const authorId = req.session.user && req.session.user.id || 0;
  
     const tip = models.tip.build(
         {
             text: req.body.text,
-            quizId: req.quiz.id
+            quizId: req.quiz.id,
+
+            //Cree una migración que añada el campo authorId a la tabla tips.
+            authorId: authorId
         });
 
     tip.save()

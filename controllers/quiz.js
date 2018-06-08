@@ -9,7 +9,13 @@ exports.load = (req, res, next, quizId) => {
 
     models.quiz.findById(quizId, {
         include: [
-            models.tip,
+            //Modifique el controlador controllers/quiz.js para que al cargar de forma ansiosa (opción include)
+            //las pistas en las búsquedas de quizzes, también se cargue quién es el autor de cada pista. Es
+            //decir, en la llamada findById existente en el método load de controllers/quiz.js, hay que añadir
+            //un include (anidado dentro del include existente) para models.tip que cargue los autores de los tips.
+            {model: models.tip,
+                include:  [{model: models.user, as: 'author'}]
+            },
             {model: models.user, as: 'author'}
         ]
     })
