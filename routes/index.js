@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
 
+//p7
+//var Sequelize= require("sequelize");
+const{models}= require("../models");
+
 const quizController = require('../controllers/quiz');
 const tipController = require('../controllers/tip');
 const userController = require('../controllers/user');
