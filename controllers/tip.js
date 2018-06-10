@@ -82,3 +82,49 @@ exports.destroy = (req, res, next) => {
     .catch(error => next(error));
 };
 
+//comprueba que el usuario logueado es el autor de la pista o es un usuario administrador
+exports.adminOrAuthorRequired = (req, res, next) => {
+     
+    const isAdmin  = !!req.session.user.isAdmin;
+    const isAuthorTip = req.tip.authorId === req.session.user.id;
+
+    if (isAdmin || isAuthorTip) {
+        next();
+    } else {
+        console.log('Prohibited operation: The logged in user is not the author of the quiz, nor an administrator.');
+        res.send(403);
+    }
+};
+
+//Añada en controllers/tip.js los middlewares que atienden las dos peticiones anteriores. Llamelos edit y update.
+
+// GET /quizzes/:quizId/:tipId/edit
+exports.edit = (req, res, next) => {
+
+    const {tip,quiz} = req;
+
+    res.render('tips/edit', {tip,quiz});
+};
+
+// PUT /quizzes/:quizId
+exports.update = (req, res, next) => {
+
+    const {quiz, tip,body} = req;
+
+    tip.text = body.text;
+    tip.accepted = false;
+    tip.save({fields: ["text","accepted"]})
+    .then(tip => {
+        req.flash('success', 'Tip edited successfully.');
+        res.redirect('/goback' );
+    })
+    .catch(Sequelize.ValidationError, error => {
+        req.flash('error', 'There are errors in the form:');
+        error.errors.forEach(({message}) => req.flash('error', message));
+        res.render('tips/edit', {tip});
+    })
+    .catch(error => {
+        req.flash('error', 'Error editing the Tip: ' + error.message);
+        next(error);
+    });
+};

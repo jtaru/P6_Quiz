@@ -24,6 +24,12 @@
                     </a>
 
                 <% } %>
+                <% if (isAdmin || isTipAuthor) { %>
+                    <a href="/quizzes/<%= quizId %>/tips/<%= tip.id %>/edit">
+                        <button>Edit</button>
+                    </a>
+              
+                <% } %>
 
                 <% if (isAdmin || isQuizAuthor) { %>
 

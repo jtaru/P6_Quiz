@@ -140,4 +140,29 @@ router.delete('/quizzes/:quizId(\\d+)/tips/:tipId(\\d+)',
     tipController.destroy);
 
 
+/*Para poder editar el texto de las pistas se necesitan dos primitivas nuevas en la interface:
+GET  /quizzes/:quizId/tips/:tipId/edit
+PUT  /quizzes/:quizId/tips/:tipId
+
+Añada estas dos rutas en routes/index.js.
+
+Para que las pistas solo puedan ser editadas por sus autores y por usuarios administradores,
+debe añadir también los siguientes middlewares en la definición de estas rutas:
+    • El middleware loginRequired del controlador de sesión para asegurarse de que ya se ha
+    hecho login. Este middleware está disponible en controllers/sesión.js.
+    
+    • Un nuevo middleware, que hay que crear por ejemplo con el nombre
+    adminOrAuthorRequired en controllers/tip.js, que compruebe que el usuario logueado
+    es el autor de la pista o es un usuario administrador. 
+*/
+
+router.get('/quizzes/:quizId(\\d+)/tips/:tipId(\\d+)/edit', 
+                                                            sessionController.loginRequired,
+                                                            tipController.adminOrAuthorRequired,
+                                                            tipController.edit);
+
+router.put('/quizzes/:quizId(\\d+)/tips/:tipId(\\d+)',
+                                                        sessionController.loginRequired,
+                                                        tipController.adminOrAuthorRequired,
+                                                        tipController.update);
 module.exports = router;
